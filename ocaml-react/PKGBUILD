@@ -24,7 +24,7 @@ package() {
    patch -Np0 < ../react.diff
    mkdir -p "$pkgdir/$(ocamlfind printconf destdir)"
    OCAMLFIND_DESTDIR="$pkgdir/$(ocamlfind printconf destdir)" \
-   ocamlfind install react src/META _build/src/react.{cmi,mli,cmx,cmo}
+   ocamlfind install react src/META _build/src/react.{cmi,mli,cmx,cmo,o}
    DOCDIR=$pkgdir/usr/share/doc/$pkgname
    mkdir -p $DOCDIR
    cp -r doc/* $DOCDIR
