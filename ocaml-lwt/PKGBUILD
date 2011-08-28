@@ -7,13 +7,16 @@ pkgdesc="A library for cooperative threads in OCaml"
 arch=('i686' 'x86_64')
 url="http://ocsigen.org/lwt/"
 license=('LGPL')
-depends=('ocaml>=3.12.0' 'ocaml-findlib' 'ocaml-react' 'libev')
+depends=('ocaml>=3.12.0' 'ocaml-findlib' 'ocaml-react' 'libev' 'ocaml-ssl' 'ocaml-text')
 source=(http://ocsigen.org/download/$srcname-$pkgver.tar.gz)
 md5sums=('fb7f3600a075c94a94eacf2464c09feb')
 conflicts=('lwt')
 
 build() {
 	cd $srcdir/$srcname-$pkgver
+
+	./configure --prefix /usr --destdir "$pkgdir" \
+	  --enable-unix --enable-react --enable-text --enable-ssl
 
 	env DESTDIR="$pkgdir" \
 	OCAMLFIND_DESTDIR="$pkgdir/$(ocamlfind printconf destdir)" \
