@@ -1,0 +1,39 @@
+# Maintainer: Taylor Venable <taylor@metasyntax.net>
+
+srcname='tyxml'
+pkgname="ocaml-${srcname}-darcs"
+pkgver='20111107'
+pkgrel=1
+pkgdesc='OCaml library that allows you to build XML trees whose validity is ensured by the typechecker'
+arch=('i686' 'x86_64')
+url='http://ocsigen.org/'
+license=('LGPL')
+depends=('ocaml' 'ocamlnet')
+makedepends=('ocaml-findlib')
+options=('!strip')
+conflicts=('tyxml')
+provides=('ocaml-tyxml=2.0.1')
+
+build() {
+    cd $srcdir
+
+    if [ -d $pkgname ] ; then
+      cd $pkgname && make clean && darcs pull http://ocsigen.org/darcs/$srcname
+    else
+      darcs get http://ocsigen.org/darcs/$srcname $pkgname && cd $pkgname
+    fi
+
+    env DESTDIR="$pkgdir" \
+        OCAMLFIND_DESTDIR="$pkgdir/$(ocamlfind printconf destdir)" \
+        make OCAMLDUCE=NO
+}
+
+
+package() {
+    mkdir -p "$pkgdir/$(ocamlfind printconf destdir)"
+
+    cd $srcdir/$pkgname
+    env DESTDIR="$pkgdir" \
+        OCAMLFIND_DESTDIR="$pkgdir/$(ocamlfind printconf destdir)" \
+        make OCAMLDUCE=NO install
+}

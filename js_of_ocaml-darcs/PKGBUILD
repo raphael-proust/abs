@@ -1,6 +1,6 @@
 #Contributor: r_p <raphlalou aT gmail dOt com>
 srcname=js_of_ocaml
-pkgname="js_of_ocaml"
+pkgname="js_of_ocaml-darcs"
 pkgver=20110828
 pkgrel=1
 pkgdesc="A compiler from OCaml bytecode to Javascript"
@@ -8,16 +8,19 @@ arch=('i686' 'x86_64')
 url="http://ocsigen.org/js_of_ocaml/"
 license=('LGPL')
 depends=('ocaml>=3.12.0' 'ocaml-findlib' 'ocaml-lwt')
+makedepends=('ocaml-findlib' 'darcs')
 install=js_of_ocaml-darcs.install
 md5sums=('649c607f8436f5eb6f3ec814aeadb900')
 conflicts=('js_of_ocaml')
+provides=('js_of_ocaml=1.0.6.1')
 
 build() {
     cd $srcdir
+
     if [ -d $pkgname ] ; then
-      cd $pkgname && make clean && darcs pull http://ocsigen.org/darcs/$pkgname
+      cd $pkgname && make clean && darcs pull http://ocsigen.org/darcs/$srcname
     else
-      darcs get http://ocsigen.org/darcs/$pkgname && cd $pkgname
+      darcs get http://ocsigen.org/darcs/$srcname $pkgname && cd $pkgname
     fi
 
     sed -i "s+^BINDIR := .*$+BINDIR := ${pkgdir}/usr/bin+" Makefile.conf
@@ -29,7 +32,7 @@ build() {
 package() {
     mkdir -p "$pkgdir/$(ocamlfind printconf destdir)"
     mkdir -p "$pkgdir/$(ocamlfind printconf destdir)/stublibs"
-    cd $srcdir/$srcname
+    cd $srcdir/$pkgname
     env OCAMLFIND_DESTDIR="$pkgdir/$(ocamlfind printconf destdir)" \
         OCAMLFIND_INSTFLAGS="-destdir $pkgdir/$(ocamlfind printconf destdir)" \
         BINDIR="$pkgdir/usr/bin" \

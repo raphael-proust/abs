@@ -1,0 +1,52 @@
+# Maintainer: Taylor Venable <taylor@metasyntax.net>
+
+srcname='ocsigenserver'
+pkgname="ocaml-${srcname}-darcs"
+pkgver='20111107'
+pkgrel=1
+pkgdesc='An extensible Web server written in OCaml'
+arch=('i686' 'x86_64')
+url='http://ocsigen.org/'
+license=('LGPL')
+depends=('ocaml' 'ocaml-ssl' 'ocamlnet' 'ocaml-react' 'ocaml-lwt' 'ocaml-cryptokit' 'ocaml-tyxml>=2.0.1')
+makedepends=('ocaml-findlib' 'darcs')
+provides="ocaml-${srcname}"
+conflicts="ocaml-${srcname}"
+backup=("etc/${srcname}/${srcname}.conf")
+options=('!strip')
+install="${pkgname}.install"
+source=('etc_rc.d_ocsigenserver')
+md5sums=('2a4f976110697cb467bd05deb2ac8378')
+provides=('ocaml-${srcname}=2.0.1.1')
+
+build() {
+  cd $srcdir
+
+  # update or get darcs repository
+  if [ -d ${srcname} ] ; then
+    cd ${srcname} && make clean && darcs pull --all http://ocsigen.org/darcs/${srcname}.dev
+  else
+    darcs get http://ocsigen.org/darcs/${srcname}.dev ${srcname} && cd ${srcname}
+  fi
+
+  sh configure --prefix /usr \
+               --temproot "$pkgdir" \
+               --ocsigen-user http \
+               --ocsigen-group http \
+               --staticpagesdir "/srv/${srcname}"
+
+  make
+  make doc
+}
+
+
+package() {
+  mkdir -p "${pkgdir}/$(ocamlfind printconf destdir)"
+
+  cd ${srcdir}/${srcname}
+  make install
+  make install.doc
+
+  mkdir -p "${pkgdir}/etc/rc.d"
+  cp "${startdir}/etc_rc.d_ocsigenserver" "${pkgdir}/etc/rc.d/ocsigenserver"
+}
