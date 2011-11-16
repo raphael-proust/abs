@@ -10,7 +10,6 @@ url='http://ocsigen.org/'
 license=('LGPL')
 depends=('ocaml' 'ocaml-ssl' 'ocamlnet' 'ocaml-react' 'ocaml-lwt' 'ocaml-cryptokit' 'ocaml-tyxml>=2.0.1')
 makedepends=('ocaml-findlib' 'darcs')
-provides="ocaml-${srcname}"
 conflicts="ocaml-${srcname}"
 backup=("etc/${srcname}/${srcname}.conf")
 options=('!strip')
